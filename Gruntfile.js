@@ -150,6 +150,17 @@ module.exports = function (grunt) {
     },
 
     less: {
+      compileScopedCore: {
+        options: {
+          strictMath: true,
+          sourceMap: true,
+          outputSourceFiles: true,
+          sourceMapURL: '<%= pkg.name %>-scoped.css.map',
+          sourceMapFilename: 'dist/css/<%= pkg.name %>-scoped.css.map'
+        },
+        src: 'less/bootstrap-scoped.less',
+        dest: 'dist/css/<%= pkg.name %>-scoped.css'
+      },
       compileCore: {
         options: {
           strictMath: true,
@@ -177,6 +188,12 @@ module.exports = function (grunt) {
     autoprefixer: {
       options: {
         browsers: configBridge.config.autoprefixerBrowsers
+      },
+      scopedCore: {
+        options: {
+          map: true
+        },
+        src: 'dist/css/<%= pkg.name %>-scoped.css'
       },
       core: {
         options: {
@@ -226,6 +243,10 @@ module.exports = function (grunt) {
         compatibility: 'ie8',
         keepSpecialComments: '*',
         advanced: false
+      },
+      minifyScopedCore: {
+        src: 'dist/css/<%= pkg.name %>-scoped.css',
+        dest: 'dist/css/<%= pkg.name %>-scoped.min.css'
       },
       minifyCore: {
         src: 'dist/css/<%= pkg.name %>.css',
@@ -452,8 +473,8 @@ module.exports = function (grunt) {
   grunt.registerTask('dist-js', ['concat', 'uglify:core', 'commonjs']);
 
   // CSS distribution task.
-  grunt.registerTask('less-compile', ['less:compileCore', 'less:compileTheme']);
-  grunt.registerTask('dist-css', ['less-compile', 'autoprefixer:core', 'autoprefixer:theme', 'usebanner', 'csscomb:dist', 'cssmin:minifyCore', 'cssmin:minifyTheme']);
+  grunt.registerTask('less-compile', ['less:compileCore', 'less:compileTheme', 'less:compileScopedCore']);
+  grunt.registerTask('dist-css', ['less-compile', 'autoprefixer:core', 'autoprefixer:theme', 'autoprefixer:scopedCore', 'usebanner', 'csscomb:dist', 'cssmin:minifyCore', 'cssmin:minifyTheme', 'cssmin:minifyScopedCore']);
 
   // Full distribution task.
   grunt.registerTask('dist', ['clean:dist', 'dist-css', 'copy:fonts', 'dist-js']);
