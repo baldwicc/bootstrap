@@ -150,7 +150,7 @@ module.exports = function (grunt) {
     },
 
     less: {
-      compileScopedCore: {
+      compileCore: {
         options: {
           strictMath: true,
           sourceMap: true,
@@ -161,18 +161,7 @@ module.exports = function (grunt) {
         src: 'less/bootstrap-scoped.less',
         dest: 'dist/css/<%= pkg.name %>-scoped.css'
       },
-      compileCore: {
-        options: {
-          strictMath: true,
-          sourceMap: true,
-          outputSourceFiles: true,
-          sourceMapURL: '<%= pkg.name %>.css.map',
-          sourceMapFilename: 'dist/css/<%= pkg.name %>.css.map'
-        },
-        src: 'less/bootstrap.less',
-        dest: 'dist/css/<%= pkg.name %>.css'
-      },
-      compileScopedTheme: {
+      compileTheme: {
         options: {
           strictMath: true,
           sourceMap: true,
@@ -182,17 +171,6 @@ module.exports = function (grunt) {
         },
         src: 'less/scoped-theme.less',
         dest: 'dist/css/<%= pkg.name %>-scoped-theme.css'
-      },
-      compileTheme: {
-        options: {
-          strictMath: true,
-          sourceMap: true,
-          outputSourceFiles: true,
-          sourceMapURL: '<%= pkg.name %>-theme.css.map',
-          sourceMapFilename: 'dist/css/<%= pkg.name %>-theme.css.map'
-        },
-        src: 'less/theme.less',
-        dest: 'dist/css/<%= pkg.name %>-theme.css'
       }
     },
 
@@ -200,25 +178,13 @@ module.exports = function (grunt) {
       options: {
         browsers: configBridge.config.autoprefixerBrowsers
       },
-      scopedCore: {
+      core: {
         options: {
           map: true
         },
         src: 'dist/css/<%= pkg.name %>-scoped.css'
       },
-      core: {
-        options: {
-          map: true
-        },
-        src: 'dist/css/<%= pkg.name %>.css'
-      },
       theme: {
-        options: {
-          map: true
-        },
-        src: 'dist/css/<%= pkg.name %>-theme.css'
-      },
-      scopedTheme: {
         options: {
           map: true
         },
@@ -240,8 +206,6 @@ module.exports = function (grunt) {
         csslintrc: 'less/.csslintrc'
       },
       dist: [
-        'dist/css/bootstrap.css',
-        'dist/css/bootstrap-theme.css',
         'dist/css/bootstrap-scoped.css',
         'dist/css/bootstrap-scoped-theme.css',
       ],
@@ -263,19 +227,11 @@ module.exports = function (grunt) {
         keepSpecialComments: '*',
         advanced: false
       },
-      minifyScopedCore: {
+      minifyCore: {
         src: 'dist/css/<%= pkg.name %>-scoped.css',
         dest: 'dist/css/<%= pkg.name %>-scoped.min.css'
       },
-      minifyCore: {
-        src: 'dist/css/<%= pkg.name %>.css',
-        dest: 'dist/css/<%= pkg.name %>.min.css'
-      },
       minifyTheme: {
-        src: 'dist/css/<%= pkg.name %>-theme.css',
-        dest: 'dist/css/<%= pkg.name %>-theme.min.css'
-      },
-      minifyScopedTheme: {
         src: 'dist/css/<%= pkg.name %>-scoped-theme.css',
         dest: 'dist/css/<%= pkg.name %>-scoped-theme.min.css'
       },
@@ -496,8 +452,8 @@ module.exports = function (grunt) {
   grunt.registerTask('dist-js', ['concat', 'uglify:core', 'commonjs']);
 
   // CSS distribution task.
-  grunt.registerTask('less-compile', ['less:compileCore', 'less:compileTheme', 'less:compileScopedCore', 'less:compileScopedTheme']);
-  grunt.registerTask('dist-css', ['less-compile', 'autoprefixer:core', 'autoprefixer:theme', 'autoprefixer:scopedCore', 'autoprefixer:scopedTheme', 'usebanner', 'csscomb:dist', 'cssmin:minifyCore', 'cssmin:minifyTheme', 'cssmin:minifyScopedCore', 'cssmin:minifyScopedTheme']);
+  grunt.registerTask('less-compile', ['less:compileCore', 'less:compileTheme']);
+  grunt.registerTask('dist-css', ['less-compile', 'autoprefixer:core', 'autoprefixer:theme', 'usebanner', 'csscomb:dist', 'cssmin:minifyCore', 'cssmin:minifyTheme', 'cssmin:minifyCore', 'cssmin:minifyTheme']);
 
   // Full distribution task.
   grunt.registerTask('dist', ['clean:dist', 'dist-css', 'copy:fonts', 'dist-js']);

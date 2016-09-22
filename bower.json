@@ -14,8 +14,8 @@
   ],
   "homepage": "http://getbootstrap.com",
   "main": [
-    "less/bootstrap.less",
-    "dist/css/bootstrap.css",
+    "less/bootstrap-scoped.less",
+    "dist/css/bootstrap-scoped.css",
     "dist/js/bootstrap.js",
     "dist/fonts/glyphicons-halflings-regular.eot",
     "dist/fonts/glyphicons-halflings-regular.svg",
