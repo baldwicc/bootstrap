@@ -4,6 +4,7 @@ $(function () {
   QUnit.module('modal plugin')
 
   QUnit.test('should be defined on jquery object', function (assert) {
+    assert.expect(1)
     assert.ok($(document.body).modal, 'modal method is defined')
   })
 
@@ -19,10 +20,12 @@ $(function () {
   })
 
   QUnit.test('should provide no conflict', function (assert) {
+    assert.expect(1)
     assert.strictEqual($.fn.modal, undefined, 'modal was set back to undefined (orig value)')
   })
 
   QUnit.test('should return jquery collection containing the element', function (assert) {
+    assert.expect(2)
     var $el = $('<div id="modal-test"/>')
     var $modal = $el.bootstrapModal()
     assert.ok($modal instanceof $, 'returns jquery collection')
@@ -30,10 +33,12 @@ $(function () {
   })
 
   QUnit.test('should expose defaults var for settings', function (assert) {
+    assert.expect(1)
     assert.ok($.fn.bootstrapModal.Constructor.DEFAULTS, 'default object exposed')
   })
 
   QUnit.test('should insert into dom when show method is called', function (assert) {
+    assert.expect(1)
     var done = assert.async()
 
     $('<div id="modal-test"/>')
@@ -44,18 +49,8 @@ $(function () {
       .bootstrapModal('show')
   })
 
-  QUnit.test('should set aria-hidden to false when show method is called', function (assert) {
-    var done = assert.async()
-
-    $('<div id="modal-test"/>')
-      .on('shown.bs.modal', function () {
-        assert.strictEqual($('#modal-test').attr('aria-hidden'), 'false', 'aria-hidden is set to string "false" when modal shown')
-        done()
-      })
-      .bootstrapModal('show')
-  })
-
   QUnit.test('should fire show event', function (assert) {
+    assert.expect(1)
     var done = assert.async()
 
     $('<div id="modal-test"/>')
@@ -67,6 +62,7 @@ $(function () {
   })
 
   QUnit.test('should not fire shown when show was prevented', function (assert) {
+    assert.expect(1)
     var done = assert.async()
 
     $('<div id="modal-test"/>')
@@ -82,6 +78,7 @@ $(function () {
   })
 
   QUnit.test('should hide modal when hide is called', function (assert) {
+    assert.expect(3)
     var done = assert.async()
 
     $('<div id="modal-test"/>')
@@ -97,22 +94,8 @@ $(function () {
       .bootstrapModal('show')
   })
 
-  QUnit.test('should set aria-hidden to true when hide is called', function (assert) {
-    var done = assert.async()
-
-    $('<div id="modal-test"/>')
-      .on('shown.bs.modal', function () {
-        assert.strictEqual($('#modal-test').length, 1, 'modal has been inserted into the dom')
-        $(this).bootstrapModal('hide')
-      })
-      .on('hidden.bs.modal', function () {
-        assert.strictEqual($('#modal-test').attr('aria-hidden'), 'true', 'aria-hidden is set to string "true" when modal shown')
-        done()
-      })
-      .bootstrapModal('show')
-  })
-
   QUnit.test('should toggle when toggle is called', function (assert) {
+    assert.expect(3)
     var done = assert.async()
 
     $('<div id="modal-test"/>')
@@ -129,13 +112,14 @@ $(function () {
   })
 
   QUnit.test('should remove from dom when click [data-dismiss="modal"]', function (assert) {
+    assert.expect(3)
     var done = assert.async()
 
     $('<div id="modal-test"><span class="close" data-dismiss="modal"/></div>')
       .on('shown.bs.modal', function () {
         assert.ok($('#modal-test').is(':visible'), 'modal visible')
         assert.notEqual($('#modal-test').length, 0, 'modal inserted into dom')
-        $(this).find('.close').click()
+        $(this).find('.close').trigger('click')
       })
       .on('hidden.bs.modal', function () {
         assert.ok(!$('#modal-test').is(':visible'), 'modal hidden')
@@ -145,6 +129,7 @@ $(function () {
   })
 
   QUnit.test('should allow modal close with "backdrop:false"', function (assert) {
+    assert.expect(2)
     var done = assert.async()
 
     $('<div id="modal-test" data-backdrop="false"/>')
@@ -160,14 +145,15 @@ $(function () {
   })
 
   QUnit.test('should close modal when clicking outside of modal-content', function (assert) {
+    assert.expect(3)
     var done = assert.async()
 
     $('<div id="modal-test"><div class="contents"/></div>')
       .on('shown.bs.modal', function () {
         assert.notEqual($('#modal-test').length, 0, 'modal inserted into dom')
-        $('.contents').click()
+        $('.contents').trigger('click')
         assert.ok($('#modal-test').is(':visible'), 'modal visible')
-        $('#modal-test .modal-backdrop').click()
+        $('#modal-test').trigger('click')
       })
       .on('hidden.bs.modal', function () {
         assert.ok(!$('#modal-test').is(':visible'), 'modal hidden')
@@ -177,18 +163,19 @@ $(function () {
   })
 
   QUnit.test('should close modal when escape key is pressed via keydown', function (assert) {
+    assert.expect(3)
     var done = assert.async()
 
-    var div = $('<div id="modal-test"/>')
-    div
+    var $div = $('<div id="modal-test"/>')
+    $div
       .on('shown.bs.modal', function () {
-        assert.ok($('#modal-test').length, 'modal insterted into dom')
+        assert.ok($('#modal-test').length, 'modal inserted into dom')
         assert.ok($('#modal-test').is(':visible'), 'modal visible')
-        div.trigger($.Event('keydown', { which: 27 }))
+        $div.trigger($.Event('keydown', { which: 27 }))
 
         setTimeout(function () {
           assert.ok(!$('#modal-test').is(':visible'), 'modal hidden')
-          div.remove()
+          $div.remove()
           done()
         }, 0)
       })
@@ -196,18 +183,19 @@ $(function () {
   })
 
   QUnit.test('should not close modal when escape key is pressed via keyup', function (assert) {
+    assert.expect(3)
     var done = assert.async()
 
-    var div = $('<div id="modal-test"/>')
-    div
+    var $div = $('<div id="modal-test"/>')
+    $div
       .on('shown.bs.modal', function () {
         assert.ok($('#modal-test').length, 'modal inserted into dom')
         assert.ok($('#modal-test').is(':visible'), 'modal visible')
-        div.trigger($.Event('keyup', { which: 27 }))
+        $div.trigger($.Event('keyup', { which: 27 }))
 
         setTimeout(function () {
-          assert.ok($('#modal-test').is(':visible'), 'modal still visible')
-          div.remove()
+          assert.ok($div.is(':visible'), 'modal still visible')
+          $div.remove()
           done()
         }, 0)
       })
@@ -215,6 +203,7 @@ $(function () {
   })
 
   QUnit.test('should trigger hide event once when clicking outside of modal-content', function (assert) {
+    assert.expect(1)
     var done = assert.async()
 
     var triggered
@@ -222,7 +211,7 @@ $(function () {
     $('<div id="modal-test"><div class="contents"/></div>')
       .on('shown.bs.modal', function () {
         triggered = 0
-        $('#modal-test .modal-backdrop').click()
+        $('#modal-test').trigger('click')
       })
       .on('hide.bs.modal', function () {
         triggered += 1
@@ -233,18 +222,19 @@ $(function () {
   })
 
   QUnit.test('should close reopened modal with [data-dismiss="modal"] click', function (assert) {
+    assert.expect(2)
     var done = assert.async()
 
     $('<div id="modal-test"><div class="contents"><div id="close" data-dismiss="modal"/></div></div>')
       .one('shown.bs.modal', function () {
-        $('#close').click()
+        $('#close').trigger('click')
       })
       .one('hidden.bs.modal', function () {
         // after one open-close cycle
         assert.ok(!$('#modal-test').is(':visible'), 'modal hidden')
         $(this)
           .one('shown.bs.modal', function () {
-            $('#close').click()
+            $('#close').trigger('click')
           })
           .one('hidden.bs.modal', function () {
             assert.ok(!$('#modal-test').is(':visible'), 'modal hidden')
@@ -256,6 +246,7 @@ $(function () {
   })
 
   QUnit.test('should restore focus to toggling element when modal is hidden after having been opened via data-api', function (assert) {
+    assert.expect(1)
     var done = assert.async()
 
     var $toggleBtn = $('<button data-toggle="modal" data-target="#modal-test"/>').appendTo('#qunit-fixture')
@@ -268,14 +259,15 @@ $(function () {
         }, 0)
       })
       .on('shown.bs.modal', function () {
-        $('#close').click()
+        $('#close').trigger('click')
       })
       .appendTo('#qunit-fixture')
 
-    $toggleBtn.click()
+    $toggleBtn.trigger('click')
   })
 
   QUnit.test('should not restore focus to toggling element if the associated show event gets prevented', function (assert) {
+    assert.expect(1)
     var done = assert.async()
     var $toggleBtn = $('<button data-toggle="modal" data-target="#modal-test"/>').appendTo('#qunit-fixture')
     var $otherBtn = $('<button id="other-btn"/>').appendTo('#qunit-fixture')
@@ -283,7 +275,7 @@ $(function () {
     $('<div id="modal-test"><div class="contents"><div id="close" data-dismiss="modal"/></div>')
       .one('show.bs.modal', function (e) {
         e.preventDefault()
-        $otherBtn.focus()
+        $otherBtn.trigger('focus')
         setTimeout($.proxy(function () {
           $(this).bootstrapModal('show')
         }, this), 0)
@@ -295,14 +287,15 @@ $(function () {
         }, 0)
       })
       .on('shown.bs.modal', function () {
-        $('#close').click()
+        $('#close').trigger('click')
       })
       .appendTo('#qunit-fixture')
 
-    $toggleBtn.click()
+    $toggleBtn.trigger('click')
   })
 
   QUnit.test('should restore inline body padding after closing', function (assert) {
+    assert.expect(2)
     var done = assert.async()
     var originalBodyPad = 0
     var $body = $(document.body)
@@ -324,6 +317,7 @@ $(function () {
   })
 
   QUnit.test('should ignore values set via CSS when trying to restore body padding after closing', function (assert) {
+    assert.expect(1)
     var done = assert.async()
     var $body = $(document.body)
     var $style = $('<style>body { padding-right: 42px; }</style>').appendTo('head')
@@ -341,6 +335,7 @@ $(function () {
   })
 
   QUnit.test('should ignore other inline styles when trying to restore body padding after closing', function (assert) {
+    assert.expect(2)
     var done = assert.async()
     var $body = $(document.body)
     var $style = $('<style>body { padding-right: 42px; }</style>').appendTo('head')
@@ -362,6 +357,7 @@ $(function () {
   })
 
   QUnit.test('should properly restore non-pixel inline body padding after closing', function (assert) {
+    assert.expect(1)
     var done = assert.async()
     var $body = $(document.body)
 
