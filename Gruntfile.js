@@ -210,7 +210,7 @@ module.exports = function (grunt) {
       },
       dist: [
         'dist/css/bootstrap-scoped.css',
-        'dist/css/bootstrap-scoped-theme.css',
+        'dist/css/bootstrap-scoped-theme.css'
       ],
       examples: [
         'docs/examples/**/*.css'
